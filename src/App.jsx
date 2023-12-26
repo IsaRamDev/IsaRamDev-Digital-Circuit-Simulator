@@ -1,47 +1,67 @@
 import { useState } from 'react';
 import OrGate from './components/Or';
 import AndGate from './components/And';
-// import NotGate from './components/Not';
-import DropZone from './components/Dropzone';
 
 function App() {
   const [components, setComponents] = useState([]);
+  const [dragging, setDragging] = useState(null);
 
-  const handleDragStart = (e, type) => {
-    const componentData = JSON.stringify({ type, id: `${type}-${Date.now()}` }); // Genera un ID único basado en el tiempo actual
-    e.dataTransfer.setData('text', componentData);
+  const addComponent = (type) => {
+    setComponents(prev => [...prev, { type, id: `${type}-${Date.now()}`, x: 100, y: 100 }]);
   };
-  
 
-  const handleDrop = (e) => {
-    const data = e.dataTransfer.getData('text');
-    if (data) {
-      const componentData = JSON.parse(data);
-      setComponents((prevComponents) => [...prevComponents, componentData]);
-    }
+  const startDragging = (id) => {
+    setDragging(id);
   };
-  
+
+  const onDrag = (e) => {
+    if (!dragging) return;
+
+    const index = components.findIndex(comp => comp.id === dragging);
+    if (index < 0) return;
+
+    const updatedComponents = [...components];
+    updatedComponents[index] = {
+      ...updatedComponents[index],
+      x: e.clientX,
+      y: e.clientY
+    };
+
+    setComponents(updatedComponents);
+  };
+
+  const stopDragging = () => {
+    setDragging(null);
+  };
 
   return (
-    <div>
-      <OrGate onDragStart={(e) => handleDragStart(e, 'OR')} />
-      <AndGate onDragStart={(e) => handleDragStart(e, 'AND')} />
-      <DropZone onDrop={handleDrop}>
-      <DropZone onDrop={handleDrop}>
-  {components.map((component, index) => {
-    switch (component.type) {
-      case 'OR':
-        return <OrGate key={component.id} />;
-      case 'AND':
-        return <AndGate key={component.id} />;
-      default:
-        return null;
-    }
-  })}
-</DropZone>
-      </DropZone>
+    <div className="flex h-screen">
+      <div className="w-48 border-r-2 border-black p-2">
+        <button onClick={() => addComponent('OR')}>
+          <OrGate />
+        </button>
+        <button onClick={() => addComponent('AND')}>
+          <AndGate />
+        </button>
+      </div>
+
+      <div className="flex-grow relative" onMouseMove={onDrag} onMouseUp={stopDragging}>
+        {components.map(comp => {
+          const Component = comp.type === 'OR' ? OrGate : AndGate;
+          return (
+            <div 
+              key={comp.id} 
+              className="absolute"
+              style={{ left: comp.x, top: comp.y }}
+              onMouseDown={() => startDragging(comp.id)}
+            >
+              <Component />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-export default App
+export default App;

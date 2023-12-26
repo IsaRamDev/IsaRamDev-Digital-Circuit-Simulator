@@ -1,9 +1,6 @@
 import { useState } from 'react';
 
-import Draggable from './Draggable';
-
-// eslint-disable-next-line react/prop-types
-const AndGate = ({ id }) => {
+const AndGate = () => {
   const [inputA, setInputA] = useState(0);
   const [inputB, setInputB] = useState(0);
   const output = inputA && inputB;
@@ -11,14 +8,8 @@ const AndGate = ({ id }) => {
   const toggleInputA = () => setInputA(inputA ? 0 : 1);
   const toggleInputB = () => setInputB(inputB ? 0 : 1);
 
-  const handleDragStart = (e) => {
-    e.dataTransfer.setData('application/reactflow', id); // Establecer el ID de la compuerta OR
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
   return (
-    <Draggable onDragStart={handleDragStart}>
-      <div style={{ userSelect: 'none', cursor: 'grab' }}>
+    <div>
     <svg width="120" height="60" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
       <path d="M 20,30 L 38,30 M 20,50 L 38,50 M 40,20 40,60 M 40,20 L 70,20 Q 100,40 70,59 L 40,59 M 85,40 L 100,40"
         stroke="black" fill="transparent" strokeWidth="2" />
@@ -30,7 +21,6 @@ const AndGate = ({ id }) => {
       <text x="110" y="43" fontSize="10">{output.toString()}</text>
     </svg>
     </div>
-    </Draggable>
   );
 }
 
