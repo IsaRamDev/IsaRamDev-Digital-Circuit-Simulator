@@ -7,6 +7,7 @@ function App() {
   const [dragging, setDragging] = useState(null);
   const [connections, setConnections] = useState([]); // Asegúrate de tener esto
   const [currentConnection, setCurrentConnection] = useState(null);
+  const [offset] = useState({ x: 250, y: 30 });
 
   const startConnection = (pointId) => {
     const existingConnectionIndex = connections.findIndex(c => c.fromId === pointId);
@@ -35,17 +36,17 @@ function App() {
 
   const onDrag = (e) => {
     if (!dragging) return;
-
+  
     const index = components.findIndex(comp => comp.id === dragging);
     if (index < 0) return;
-
+  
     const updatedComponents = [...components];
     updatedComponents[index] = {
       ...updatedComponents[index],
-      x: e.clientX,
-      y: e.clientY
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y
     };
-
+  
     setComponents(updatedComponents);
   };
 
