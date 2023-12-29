@@ -8,15 +8,17 @@ const OrGate = ({ id, startConnection, completeConnection}) => {
 
   const toggleInputA = () => setInputA(inputA ? 0 : 1);
   const toggleInputB = () => setInputB(inputB ? 0 : 1);
-  
+
   const handleConnectionPointClick = (pointType) => {
-    if (pointType === 'output') {
-      startConnection(id);
-    } else if (pointType === 'input' || pointType === 'input2') {
-      completeConnection(id);
+    const pointId = `${id}-${pointType}`;
+    console.log(pointId)
+    if (pointType.includes('output')) {
+      startConnection(pointId);
+    } else {
+      completeConnection(pointId);
     }
   };
-  
+
   return (
     <div>
       <svg width="120" height="60" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">

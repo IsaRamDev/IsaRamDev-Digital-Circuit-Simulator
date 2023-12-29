@@ -5,7 +5,7 @@ import AndGate from './components/And';
 function App() {
   const [components, setComponents] = useState([]);
   const [dragging, setDragging] = useState(null);
-  const [connections, setConnections] = useState([]); // Asegúrate de tener esto
+  const [connections, setConnections] = useState([]);
   const [currentConnection, setCurrentConnection] = useState(null);
   const [offset] = useState({ x: 250, y: 30 });
 
@@ -18,9 +18,20 @@ function App() {
       setCurrentConnection({ fromId: pointId });
     }
   };
+
   const completeConnection = (pointId) => {
     console.log("Completando conexión hacia:", pointId);
+  
     if (currentConnection) {
+      // Verificar si el input ya tiene una conexión
+      const existingConnection = connections.find(c => c.toId === pointId);
+      if (existingConnection) {
+        console.log("Este input ya está conectado.");
+        setCurrentConnection(null);
+        return; // No permitir múltiples conexiones al mismo input
+      }
+  
+      // Crear nueva conexión
       setConnections(prev => [...prev, { ...currentConnection, toId: pointId }]);
       setCurrentConnection(null);
     }
@@ -55,9 +66,12 @@ function App() {
   };
 
   function calculateConnectionCoordinates(connection, components) {
-    const fromGate = components.find(comp => comp.id === connection.fromId);
-    const toGate = components.find(comp => comp.id === connection.toId);
-
+    const fromGateId = connection.fromId.split('-').slice(0, -1).join('-');
+    const toGateId = connection.toId.split('-').slice(0, -1).join('-');
+  
+    const fromGate = components.find(comp => comp.id === fromGateId);
+    const toGate = components.find(comp => comp.id === toGateId);
+  
     if (!fromGate || !toGate) {
       console.log("No se encontraron compuertas correspondientes");
       return { x1: 0, y1: 0, x2: 0, y2: 0 };
@@ -69,8 +83,14 @@ function App() {
     const x1 = fromGate.x + gateWidth;
     const y1 = fromGate.y + gateHeight / 2;
 
-    const x2 = toGate.x;
-    const y2 = toGate.y + gateHeight / 2;
+    let x2, y2;
+    if (connection.toId.endsWith('input')) {
+      x2 = toGate.x;
+      y2 = toGate.y + gateHeight / 2;
+    } else if (connection.toId.endsWith('input2')) {
+      x2 = toGate.x;
+      y2 = toGate.y + gateHeight / 2 + 20; 
+    }
 
     const adjustedX1 = x1 - 20; 
     const adjustedY1 = y1 + 10; 
@@ -85,7 +105,7 @@ function App() {
     return connections.map((connection, index) => {
       const { x1, y1, x2, y2 } = calculateConnectionCoordinates(connection, components);
 
-      console.log(`Dibujando línea: ${x1}, ${y1}, ${x2}, ${y2}`); // Revisar las coordenadas
+      console.log(`Dibujando línea: ${x1}, ${y1}, ${x2}, ${y2}`);
 
       return (
         <line
