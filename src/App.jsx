@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import OrGate from './components/Or';
 import AndGate from './components/And';
+import NotGate from './components/Not';
 
 function App() {
   const [components, setComponents] = useState([]);
@@ -90,6 +91,9 @@ function App() {
     } else if (connection.toId.endsWith('input2')) {
       x2 = toGate.x;
       y2 = toGate.y + gateHeight / 2 + 20; 
+    } else if (connection.toId.endsWith('input3')) {
+      x2 = toGate.x;
+      y2 = toGate.y + gateHeight / 2 + 10; 
     }
 
     const adjustedX1 = x1 - 20; 
@@ -124,13 +128,14 @@ function App() {
       <div className="w-48 border-r-2 border-black p-2">
         <button onClick={() => addComponent('OR')}><OrGate /></button>
         <button onClick={() => addComponent('AND')}><AndGate /></button>
+        <button onClick={() => addComponent('NOT')}><NotGate /></button>
       </div>
       <div className="flex-grow relative" onMouseMove={onDrag} onMouseUp={stopDragging}>
         <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
           {renderConnections()}
         </svg>
         {components.map(comp => {
-          const Component = comp.type === 'OR' ? OrGate : AndGate;
+          const Component = comp.type === 'OR' ? OrGate : comp.type === 'AND' ? AndGate : NotGate ;
           return (
             <div
               key={comp.id}
