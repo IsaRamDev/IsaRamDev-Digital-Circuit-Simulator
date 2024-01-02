@@ -2,6 +2,11 @@ import { useState } from 'react';
 import OrGate from './components/Or';
 import AndGate from './components/And';
 import NotGate from './components/Not';
+import NandGate from './components/Nand';
+import NorGate from './components/Nor';
+import XorGate from './components/Xor';
+import XnorGate from './components/Xnor';
+import Buffer from './components/Buffer';
 
 function App() {
   const [components, setComponents] = useState([]);
@@ -125,17 +130,53 @@ function App() {
 
   return (
     <div className="flex h-screen">
-      <div className="w-48 border-r-2 border-black p-2">
+      <div className="w-48 border-r-2 border-black p-2 text-center">
         <button onClick={() => addComponent('OR')}><OrGate /></button>
+        <br></br>
+        <label>OR</label>
+        <br></br>
+        <br></br>
         <button onClick={() => addComponent('AND')}><AndGate /></button>
+        <br></br>
+        <label>AND</label>
+        <br></br>
+        <br></br>
         <button onClick={() => addComponent('NOT')}><NotGate /></button>
+        <br></br>
+        <label>NOT</label>
+        <br></br>
+        <br></br>
+        <button onClick={() => addComponent('NAND')}><NandGate /></button>
+        <br></br>
+        <label>NAND</label>
+        <br></br>
+        <br></br>
+        <button onClick={() => addComponent('NOR')}><NorGate /></button>
+        <br></br>
+        <label>NOR</label>
+        <br></br>
+        <br></br>
+        <button onClick={() => addComponent('XOR')}><XorGate /></button>
+        <br></br>
+        <label>XOR</label>
+        <br></br>
+        <br></br>
+        <button onClick={() => addComponent('XNOR')}><XnorGate /></button>
+        <br></br>
+        <label>XNOR</label>
+        <br></br>
+        <br></br>
+        <button onClick={() => addComponent('BUFFER')}><Buffer /></button>
+        <br></br>
+        <label>Buffer</label>
+        <br></br>
       </div>
       <div className="flex-grow relative" onMouseMove={onDrag} onMouseUp={stopDragging}>
         <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
           {renderConnections()}
         </svg>
         {components.map(comp => {
-          const Component = comp.type === 'OR' ? OrGate : comp.type === 'AND' ? AndGate : NotGate ;
+          const Component = comp.type === 'OR' ? OrGate : comp.type === 'AND' ? AndGate : comp.type === 'NOT' ? NotGate : comp.type === 'NAND' ? NandGate : comp.type === 'NOR' ? NorGate :comp.type === 'XOR' ? XorGate: comp.type === 'XNOR' ? XnorGate : Buffer ;
           return (
             <div
               key={comp.id}
