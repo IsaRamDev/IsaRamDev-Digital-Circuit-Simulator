@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './index.css';
 import OrGate from './components/Or';
 import AndGate from './components/And';
 import NotGate from './components/Not';
@@ -14,6 +15,7 @@ function App() {
   const [connections, setConnections] = useState([]);
   const [currentConnection, setCurrentConnection] = useState(null);
   const [offset] = useState({ x: 250, y: 30 });
+  const [showInstructions, setShowInstructions] = useState(false);
 
   const startConnection = (pointId) => {
     const existingConnectionIndex = connections.findIndex(c => c.fromId === pointId);
@@ -129,52 +131,63 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen">
-      <div className="w-48 border-r-2 border-black p-2 text-center">
-        <button onClick={() => addComponent('OR')}><OrGate /></button>
+    <div className="flex h-screen border-4 border-gray-300">
+      <div className="w-48 border-r-2 border-gray-200 p-2 text-center bg-pastel-blue">
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('OR')}><OrGate /></button>
         <br></br>
-        <label>OR</label>
-        <br></br>
-        <br></br>
-        <button onClick={() => addComponent('AND')}><AndGate /></button>
-        <br></br>
-        <label>AND</label>
+        <label className="cursor-pointer">OR</label>
         <br></br>
         <br></br>
-        <button onClick={() => addComponent('NOT')}><NotGate /></button>
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('AND')}><AndGate /></button>
         <br></br>
-        <label>NOT</label>
-        <br></br>
-        <br></br>
-        <button onClick={() => addComponent('NAND')}><NandGate /></button>
-        <br></br>
-        <label>NAND</label>
+        <label className="cursor-pointer">AND</label>
         <br></br>
         <br></br>
-        <button onClick={() => addComponent('NOR')}><NorGate /></button>
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('NOT')}><NotGate /></button>
         <br></br>
-        <label>NOR</label>
-        <br></br>
-        <br></br>
-        <button onClick={() => addComponent('XOR')}><XorGate /></button>
-        <br></br>
-        <label>XOR</label>
+        <label className="cursor-pointer">NOT</label>
         <br></br>
         <br></br>
-        <button onClick={() => addComponent('XNOR')}><XnorGate /></button>
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('NAND')}><NandGate /></button>
         <br></br>
-        <label>XNOR</label>
+        <label className="cursor-pointer">NAND</label>
         <br></br>
         <br></br>
-        <button onClick={() => addComponent('BUFFER')}><Buffer /></button>
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('NOR')}><NorGate /></button>
         <br></br>
-        <label>Buffer</label>
+        <label className="cursor-pointer">NOR</label>
+        <br></br>
+        <br></br>
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('XOR')}><XorGate /></button>
+        <br></br>
+        <label className="cursor-pointer">XOR</label>
+        <br></br>
+        <br></br>
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('XNOR')}><XnorGate /></button>
+        <br></br>
+        <label className="cursor-pointer">XNOR</label>
+        <br></br>
+        <br></br>
+        <button className="focus:p-2 focus:m-2 focus:shadow-lg" onClick={() => addComponent('BUFFER')}><Buffer /></button>
+        <br></br>
+        <label className="cursor-pointer">Buffer</label>
         <br></br>
       </div>
-      <div className="flex-grow relative" onMouseMove={onDrag} onMouseUp={stopDragging}>
+      <div className="flex-grow relative cursor-pointer bg-dotted bg-gray-100 border-dashed border-2 border-gray-300" onMouseMove={onDrag} onMouseUp={stopDragging}>
         <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
           {renderConnections()}
         </svg>
+        <button
+          className="cursor-pointer font-semibold fixed top-6 right-6 h-12 w-12 rounded-full hover:bg-cyan-500 bg-cyan-700 text-white flex items-center justify-center text-2xl shadow-lg"
+          onClick={() => setShowInstructions(!showInstructions)}
+        >
+          {showInstructions && (
+            <div className="text-slate-700 fixed top-16 right-4 p-4 border w-1/3 bg-white shadow-lg">
+              <p>Instrucciones</p>
+            </div>
+          )}
+          i
+        </button>
         {components.map(comp => {
           const Component = comp.type === 'OR' ? OrGate : comp.type === 'AND' ? AndGate : comp.type === 'NOT' ? NotGate : comp.type === 'NAND' ? NandGate : comp.type === 'NOR' ? NorGate :comp.type === 'XOR' ? XorGate: comp.type === 'XNOR' ? XnorGate : Buffer ;
           return (
