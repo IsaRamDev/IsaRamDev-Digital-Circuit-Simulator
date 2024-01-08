@@ -18,33 +18,26 @@ function App() {
   const [showInstructions, setShowInstructions] = useState(false);
 
   const startConnection = (pointId) => {
-    const existingConnectionIndex = connections.findIndex(c => c.fromId === pointId);
-
-    if (existingConnectionIndex !== -1) {
-      setConnections(prev => prev.filter((_, index) => index !== existingConnectionIndex));
-    } else {
       setCurrentConnection({ fromId: pointId });
-    }
   };
 
   const completeConnection = (pointId) => {
-    console.log("Completando conexión hacia:", pointId);
-  
     if (currentConnection) {
       // Verificar si el input ya tiene una conexión
-      const existingConnection = connections.find(c => c.toId === pointId);
-      if (existingConnection) {
-        console.log("Este input ya está conectado.");
-        setCurrentConnection(null);
-        return; // No permitir múltiples conexiones al mismo input
+      const existingConnectionIndex = connections.findIndex(c => c.toId === pointId);
+      
+      if (existingConnectionIndex !== -1) {
+        // Si el input ya está conectado, eliminar esa conexión
+        setConnections(prev => prev.filter((_, index) => index !== existingConnectionIndex));
+      } else {
+        // Si no, crear nueva conexión
+        setConnections(prev => [...prev, { ...currentConnection, toId: pointId }]);
       }
-  
-      // Crear nueva conexión
-      setConnections(prev => [...prev, { ...currentConnection, toId: pointId }]);
-      setCurrentConnection(null);
+  console.log(pointId)
+      setCurrentConnection({ fromId: pointId });
     }
   };
-
+  
   const addComponent = (type) => {
     setComponents(prev => [...prev, { type, id: `${type}-${Date.now()}`, x: 100, y: 100 }]);
   };
@@ -81,7 +74,6 @@ function App() {
     const toGate = components.find(comp => comp.id === toGateId);
   
     if (!fromGate || !toGate) {
-      console.log("No se encontraron compuertas correspondientes");
       return { x1: 0, y1: 0, x2: 0, y2: 0 };
     }
 
@@ -115,8 +107,6 @@ function App() {
   const renderConnections = () => {
     return connections.map((connection, index) => {
       const { x1, y1, x2, y2 } = calculateConnectionCoordinates(connection, components);
-
-      console.log(`Dibujando línea: ${x1}, ${y1}, ${x2}, ${y2}`);
 
       return (
         <line

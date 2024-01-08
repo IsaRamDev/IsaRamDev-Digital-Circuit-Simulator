@@ -6,12 +6,22 @@ const OrGate = ({ id, startConnection, completeConnection}) => {
   const [inputB, setInputB] = useState(0);
   const output = inputA || inputB;
 
-  const toggleInputA = () => setInputA(inputA ? 0 : 1);
-  const toggleInputB = () => setInputB(inputB ? 0 : 1);
+  const handleInputChangeA = (e) => {
+    const value = e.target.value;
+    if (value === '0' || value === '1') {
+      setInputA(Number(value));
+    }
+  };
+  
+  const handleInputChangeB = (e) => {
+    const value = e.target.value;
+    if (value === '0' || value === '1') {
+      setInputB(Number(value));
+    }
+  };
 
   const handleConnectionPointClick = (pointType) => {
     const pointId = `${id}-${pointType}`;
-    console.log(pointId)
     if (pointType.includes('output')) {
       startConnection(pointId);
     } else {
@@ -36,10 +46,25 @@ const OrGate = ({ id, startConnection, completeConnection}) => {
             <circle cx="100" cy="40" r="20" fill="transparent" />
             <circle cx="100" cy="40" r="3" fill="black" />
           </g>
-        <text x="5" y="33" fontSize="10" onClick={toggleInputA}>{inputA}</text>
-        <text x="5" y="53" fontSize="10" onClick={toggleInputB}>{inputB}</text>
+        <text x="5" y="33" fontSize="10" onChange={handleInputChangeA} maxLength={1} >{inputA}</text>
+        <text x="5" y="53" fontSize="10" onChange={handleInputChangeB} maxLength={1} >{inputB}</text>
         <text x="110" y="43" fontSize="10">{output}</text>
       </svg>
+      <input 
+        type="text" 
+        value={inputA} 
+        onChange={handleInputChangeA} 
+        maxLength={1} 
+        style={{ width: '20px', margin: '5px' }} 
+      />
+      <input 
+        type="text" 
+        value={inputB} 
+        onChange={handleInputChangeB} 
+        maxLength={1} 
+        style={{ width: '20px', margin: '5px' }} 
+      />
+      <div>Output: {output}</div>
     </div>
   );
 };
