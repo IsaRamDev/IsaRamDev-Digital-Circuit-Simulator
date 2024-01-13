@@ -16,6 +16,7 @@ function App() {
   const [currentConnection, setCurrentConnection] = useState(null);
   const [offset] = useState({ x: 250, y: 30 });
   const [showInstructions, setShowInstructions] = useState(false);
+  const [gateOutputs, setGateOutputs] = useState({});
 
   const startConnection = (pointId) => {
       setCurrentConnection({ fromId: pointId });
@@ -23,7 +24,6 @@ function App() {
 
   const completeConnection = (pointId) => {
     if (currentConnection) {
-      // Verificar si el input ya tiene una conexión
       const existingConnectionIndex = connections.findIndex(c => c.toId === pointId);
       
       if (existingConnectionIndex !== -1) {
@@ -33,13 +33,24 @@ function App() {
         // Si no, crear nueva conexión
         setConnections(prev => [...prev, { ...currentConnection, toId: pointId }]);
       }
-  console.log(pointId)
       setCurrentConnection({ fromId: pointId });
     }
   };
   
   const addComponent = (type) => {
-    setComponents(prev => [...prev, { type, id: `${type}-${Date.now()}`, x: 100, y: 100 }]);
+    const newId = `${type}-${Date.now()}`;
+    setComponents(prev => [...prev, { type, id: newId, x: 100, y: 100 }]);
+    setGateOutputs(prev => ({ ...prev, [newId]: gateOutputs }));
+  };
+  console.log('jool',gateOutputs)
+
+  const updateGateOutput = (gateId, newOutput, inputA, inputB) => {
+    setGateOutputs(prevOutputs => ({
+      ...prevOutputs,
+      [gateId]: newOutput,
+      ['inputA']: inputA,
+      ['inputB']: inputB
+    }));
   };
 
   const startDragging = (id) => {
@@ -217,6 +228,8 @@ function App() {
                 id={comp.id}
                 startConnection={startConnection}
                 completeConnection={completeConnection}
+                onOutputChange={(output, inputA, inputB) => {updateGateOutput(comp.id, output, inputA, inputB)
+                console.log(output, comp.id)}}
               />
             </div>
           );

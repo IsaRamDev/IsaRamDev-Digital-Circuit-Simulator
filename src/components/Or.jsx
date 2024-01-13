@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // eslint-disable-next-line react/prop-types
-const OrGate = ({ id, startConnection, completeConnection}) => {
+const OrGate = ({ id, startConnection, completeConnection, onOutputChange}) => {
   const [inputA, setInputA] = useState(0);
   const [inputB, setInputB] = useState(0);
   const output = inputA || inputB;
@@ -12,7 +12,13 @@ const OrGate = ({ id, startConnection, completeConnection}) => {
       setInputA(Number(value));
     }
   };
-  
+
+  useEffect(() => {
+    if (typeof onOutputChange === 'function') {
+      onOutputChange(output, inputA, inputB);
+    }
+  }, [output, inputA, inputB]);
+
   const handleInputChangeB = (e) => {
     const value = e.target.value;
     if (value === '0' || value === '1') {
